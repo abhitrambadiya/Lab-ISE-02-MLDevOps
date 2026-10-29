@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Housing Price Predictor | ML DevOps Lab ISE-2</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --success: #16a34a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; }
+    .container { width: 100%; max-width: 600px; background: var(--card-bg); border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1); border: 1px solid var(--border); overflow: hidden; }
+    .header { background: linear-gradient(135deg, #1e40af, #2563eb); color: white; padding: 24px; text-align: center; }
+    .header h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 6px; }
+    .header p { font-size: 0.875rem; opacity: 0.9; }
+    .badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 9999px; font-size: 0.75rem; margin-top: 8px; font-weight: 600; }
+    form { padding: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { display: flex; flex-direction: column; }
+    .form-group.full-width { grid-column: span 2; }
+    label { font-size: 0.875rem; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    input, select { padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.95rem; outline: none; transition: border-color 0.15s; }
+    input:focus, select:focus { border-color: var(--primary); ring: 2px solid #bfdbfe; }
+    button { grid-column: span 2; background: var(--primary); color: white; border: none; padding: 12px; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.15s; }
+    button:hover { background: var(--primary-dark); }
+    .result-box { margin: 0 24px 24px 24px; padding: 18px; border-radius: 8px; background: #f0fdf4; border: 1.5px solid #86efac; text-align: center; }
+    .result-label { font-size: 0.85rem; font-weight: 600; color: #166534; text-transform: uppercase; letter-spacing: 0.5px; }
+    .result-val { font-size: 1.8rem; font-weight: 800; color: #15803d; margin-top: 4px; }
+    .footer { text-align: center; margin-top: 24px; font-size: 0.8rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Housing Price Estimator</h1>
+      <p>ML DevOps Laboratory — LAB-ISE 2 Demo</p>
+      <div class="badge">Multiple Linear Regression • Docker • Jenkins CI/CD</div>
+    </div>
+
+    <form method="POST" action="/">
+      <div class="form-group full-width">
+        <label for="area">Property Area (Square Feet)</label>
+        <input type="number" id="area" name="area" value="{{ input_data.get('area', 1850) }}" min="400" max="10000" required>
+      </div>
+
+      <div class="form-group">
+        <label for="bedrooms">Bedrooms</label>
+        <select id="bedrooms" name="bedrooms">
+          {% for i in range(1, 6) %}
+            <option value="{{ i }}" {% if input_data.get('bedrooms', 3)|int == i %}selected{% endif %}>{{ i }} BHK</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="bathrooms">Bathrooms</label>
+        <select id="bathrooms" name="bathrooms">
+          {% for i in range(1, 5) %}
+            <option value="{{ i }}" {% if input_data.get('bathrooms', 2)|int == i %}selected{% endif %}>{{ i }} Bath</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="stories">Stories / Floors</label>
+        <select id="stories" name="stories">
+          {% for i in range(1, 5) %}
+            <option value="{{ i }}" {% if input_data.get('stories', 2)|int == i %}selected{% endif %}>{{ i }} Storey</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="parking">Parking Spaces</label>
+        <select id="parking" name="parking">
+          {% for i in range(0, 4) %}
+            <option value="{{ i }}" {% if input_data.get('parking', 1)|int == i %}selected{% endif %}>{{ i }} Vehicle(s)</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <button type="submit">Estimate Property Value</button>
+    </form>
+
+    {% if prediction is not none %}
+      <div class="result-box">
+        <div class="result-label">Estimated Valuation</div>
+        <div class="result-val">${{ "{:,.2f}".format(prediction) }}</div>
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="footer">
+    Student: Abhi Trambadiya | PRN: 2324000344 | Course Code: UAMPC0732
+  </div>
+</body>
+</html>
+
